@@ -22,10 +22,12 @@ pip3 install pipenv
 After it's installed 'cd' into the project directory and run:
 
 ```
-pipenv install
+pipenv shell
 ```
 
-### Running the project
+This will initialize the environment
+
+## Running the project
 
 Activate the virtual environment:
 
@@ -38,6 +40,14 @@ To start the server run:
 ```
 python3 manage.py runserver
 ```
+
+## Setting up the environment
+
+### Visual Studio Code
+
+- Make sure you have PipEnv selected as your default environment (CTRL+SHIFT+P > Python: Select Interpreter)
+
+- Install Python Extension Pack and Pylance
 
 ## License
 
