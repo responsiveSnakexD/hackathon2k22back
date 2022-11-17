@@ -12,7 +12,8 @@
 .idea/
 
 # VSCode
-.vscode
+.vscode/*
+!.vscode/launch.json
 
 # Icon must end with two \r
 Icon
