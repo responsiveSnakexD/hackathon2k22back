@@ -10,8 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id', )
-        extra_kwargs = {'password': {'write_only': True, 'required': False}}
+        fields = ('id',)
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -26,7 +25,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         #profile_data = validated_data.pop('profile')
         user = User.objects.create_user(**validated_data)
-        print(user)
         UserProfile.objects.create(
             user=user,
         )
@@ -37,23 +35,28 @@ class UserLoginSerializer(serializers.Serializer):
 
     email = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
-    access_token = serializers.CharField(max_length=278)
+    token = serializers.CharField(max_length=278, required=False)
 
     def validate(self, data):
         email = data.get("email", None)
         password = data.get("password", None)
 
-        if password and not password == "null":
-            user = authenticate(email=email, password=password)
-        else:
-            access_token = data.get("access_token", None)
-            user = User.objects.get(
-                email=email, access_token=access_token)
+        if not password:
+            raise serializers.ValidationError(
+                'Password field is required.'
+            )
+        if not email:
+            raise serializers.ValidationError(
+                'Email field is required.'
+            )
+
+        user = authenticate(email=email, password=password)
 
         if user is None:
             raise serializers.ValidationError(
                 'A user with this email and password is not found.'
             )
+
         try:
             update_last_login(None, user)
         except User.DoesNotExist:
@@ -61,5 +64,6 @@ class UserLoginSerializer(serializers.Serializer):
                 'User with given email and password does not exists'
             )
         return {
-            'email': user.email,
+            'token': user.token,
+            'email': email,
         }

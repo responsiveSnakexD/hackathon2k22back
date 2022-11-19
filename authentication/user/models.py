@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import PermissionsMixin
+
 import uuid
 
 
@@ -16,9 +17,9 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email)
         )
+
         refresh = RefreshToken.for_user(user)
-        user.refresh_token = str(refresh)
-        user.access_token = str(refresh.access_token)
+        user.token = str(refresh.access_token)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -44,8 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True
     )
 
-    refresh_token = models.TextField(unique=True)
-    access_token = models.TextField(unique=True)
+    token = models.TextField(unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
