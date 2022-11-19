@@ -44,8 +44,9 @@ class User(AbstractBaseUser):
 
     refresh_token = models.TextField(unique=True)
     access_token = models.TextField(unique=True)
-
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
