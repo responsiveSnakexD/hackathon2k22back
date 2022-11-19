@@ -16,13 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from authentication.views import LoginView, RegisterView, LogoutView, IsLoggedInView
+#from authentication.views import LoginView, RegisterView, LogoutView, IsLoggedInView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('register/', RegisterView.as_view(), name="RegisterView"),
-    path('login/', LoginView.as_view(), name="LoginView"),
-    path('logout/', LogoutView.as_view(), name="LogoutView"),
-    path('is-logged-in/', IsLoggedInView.as_view(), name="IsLoggedInView")
+
+
+    path('api/auth/', include('authentication.user.urls')),
+    #path('auth', include('authentication.user.urls'))
+    # path('auth/register/', RegisterView.as_view(), name="RegisterView"),
+    # path('auth/login/', LoginView.as_view(), name="LoginView"),
+    # path('auth/logout/', LogoutView.as_view(), name="LogoutView"),
+    # path('auth/is-logged-in/', IsLoggedInView.as_view(), name="IsLoggedInView")
 ]

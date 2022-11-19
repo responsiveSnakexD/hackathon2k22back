@@ -35,6 +35,7 @@ class LoginView(APIView):
 
 class RegisterView(APIView):
     def post(self, request, *args, **kwargs):
+        # TODO: chekc if user exists
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)

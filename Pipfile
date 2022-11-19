@@ -8,6 +8,9 @@ django = "*"
 autopep8 = "*"
 djangorestframework = "*"
 mysqlclient = "*"
+django-utils = "*"
+install = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
