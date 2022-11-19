@@ -49,6 +49,18 @@ python3 manage.py runserver
 
 - Install Python Extension Pack and Pylance
 
+## Installing additional packages
+
+Activate the environment:
+
+```
+pipenv shell
+```
+
+```
+pipenv install <package_name>
+```
+
 ## License
 
 This project is licensed under the MIT License.
