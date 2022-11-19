@@ -55,10 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def __str__(self):
-        return f"""
-E-mail: {self.email}
-Access token: {self.token}
-    """
+        return self.email
 
     class Meta:
         db_table = "user"

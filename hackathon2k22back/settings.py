@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'authentication.apps.AuthenticationConfig',
     'authentication.user',
+    'camapigns_tasks.apps.CamapignsTasksConfig'
 ]
 
 MIDDLEWARE = [
