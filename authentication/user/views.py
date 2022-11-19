@@ -1,9 +1,12 @@
+from authentication.user.serializers import UserRegistrationSerializer, UserLoginSerializer
+
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from authentication.user.serializers import UserRegistrationSerializer, UserLoginSerializer
 from rest_framework.generics import RetrieveAPIView
+
+from django.contrib.auth import logout
 
 
 class UserRegistrationView(CreateAPIView):
@@ -14,17 +17,22 @@ class UserRegistrationView(CreateAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
 
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            response = {
+                'success': 'False',
+                'message': str(e),
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
-        status_code = status.HTTP_201_CREATED
         response = {
             'success': 'True',
-            'status code': status_code,
             'message': 'User registered successfully',
         }
 
-        return Response(response, status=status_code)
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class UserLoginView(RetrieveAPIView):
@@ -34,12 +42,18 @@ class UserLoginView(RetrieveAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except Exception as e:
+            response = {
+                'success': 'False',
+                'message': str(e),
+            }
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
         response = {
             'success': 'True',
-            'status code': status.HTTP_200_OK,
             'message': 'User logged in successfully',
+            'token': serializer.data['token']
         }
-        status_code = status.HTTP_200_OK
-
-        return Response(response, status=status_code)
+        return Response(response, status=status.HTTP_200_OK)

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import PermissionsMixin
+
 import uuid
 
 
@@ -15,9 +17,9 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email)
         )
+
         refresh = RefreshToken.for_user(user)
-        user.refresh_token = str(refresh)
-        user.access_token = str(refresh.access_token)
+        user.token = str(refresh.access_token)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -27,12 +29,13 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
         user.is_superuser = True
+        user.is_staff = True
         user.save()
 
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -42,8 +45,7 @@ class User(AbstractBaseUser):
         unique=True
     )
 
-    refresh_token = models.TextField(unique=True)
-    access_token = models.TextField(unique=True)
+    token = models.TextField(unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
@@ -54,9 +56,8 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f"""
-{self.email}
-{self.refresh_token}
-{self.access_token}
+E-mail: {self.email}
+Access token: {self.token}
     """
 
     class Meta:
