@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import PermissionsMixin
 import uuid
 
 
@@ -27,12 +28,13 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
         user.is_superuser = True
+        user.is_staff = True
         user.save()
 
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -53,11 +55,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     def __str__(self):
-        return f"""
-{self.email}
-{self.refresh_token}
-{self.access_token}
-    """
+        return self.email
 
     class Meta:
         db_table = "user"
