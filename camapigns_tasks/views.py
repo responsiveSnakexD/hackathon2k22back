@@ -27,7 +27,7 @@ class TaskView(CreateAPIView):
             'documentation': task.documentation,
             'xp': task.xp,
             'is_approved': user_tasks.is_approved,
-            'in_verification': user_tasks.in_verification
+            'in_verification': user_tasks.in_verification,
         }
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -46,6 +46,7 @@ class TasksView(CreateAPIView):
         }
         """
         id = kwargs.get('campaign_id')
+        campaign_task = CampaignsTasks.objects.filter(campaign_id=id)
         token = request.META.get("HTTP_AUTHORIZATION")
 
         campaign_task = CampaignsTasks.objects.filter(campaign_id=id)
@@ -84,5 +85,7 @@ class CampaignView(CreateAPIView):
         # response = {}
         # for task in campaign_task:
         #     response[task.task_id.task_id] = task.task_id.title
+
+        #
 
         #
