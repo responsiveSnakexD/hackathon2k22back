@@ -21,15 +21,14 @@ class UserRegistrationView(CreateAPIView):
             serializer.is_valid(raise_exception=True)
         except Exception as e:
             response = {
-                'success': 'False',
                 'message': str(e),
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
         response = {
-            'success': 'True',
             'message': 'User registered successfully',
+            'token': serializer.data['token']
         }
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -46,13 +45,11 @@ class UserLoginView(RetrieveAPIView):
             serializer.is_valid(raise_exception=True)
         except Exception as e:
             response = {
-                'success': 'False',
                 'message': str(e),
             }
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         response = {
-            'success': 'True',
             'message': 'User logged in successfully',
             'token': serializer.data['token']
         }

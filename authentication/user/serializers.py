@@ -10,16 +10,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('id',)
+        fields = ('id', )
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
 
     profile = UserSerializer(required=False)
+    token = serializers.CharField(max_length=278, required=False)
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'profile')
+        fields = ('email', 'password', 'profile', 'token')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -29,6 +30,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             user=user,
         )
         return user
+
+    # def validate(self, data):
+    #     email = data.get("email", None)
+    #     password = data.get("password", None)
+    #     print(email)
+    #     print(password)
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -64,6 +71,6 @@ class UserLoginSerializer(serializers.Serializer):
                 'User with given email and password does not exists'
             )
         return {
-            'token': user.token,
             'email': email,
+            'token': user.token,
         }
