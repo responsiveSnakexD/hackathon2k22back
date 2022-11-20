@@ -10,6 +10,7 @@ class Campaign(models.Model):
     title = models.CharField(max_length=50)
     start_date = models.DateField()
     end_date = models.DateField()
+    description = models.TextField()
 
     def __str__(self):
         return self.title
@@ -43,11 +44,11 @@ class UsersTasks(models.Model):
         CampaignsTasks, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     url = models.CharField(max_length=70)
-    is_submitted = models.BooleanField()
-    is_verified = models.BooleanField()
+    in_verification = models.BooleanField(default=True)
+    is_approved = models.BooleanField(default=False)
     comment = models.TextField(blank=True, null=False)
 
-    __old_is_verified = False
+    __old_is_approved = False
 
     class Meta:
         constraints = [
@@ -68,14 +69,14 @@ class UsersTasks(models.Model):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.__old_is_verified = self.is_verified
+        self.__old_is_approved = self.is_approved
 
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
-        if self.is_verified == True and self.__old_is_verified == False:
+        if self.is_approved == True and self.__old_is_approved == False:
             xp_for_task = CampaignsTasks.objects.filter(
                 campaign_task_id=self.campaign_task_id.campaign_task_id)[0].task_id.xp
             sum = self.user_id.current_xp + xp_for_task
             User.objects.filter(id=self.user_id.id).update(current_xp=sum)
 
         super().save(force_insert, force_update, *args, **kwargs)
-        self.__old_is_verified = self.is_verified
+        self.__old_is_approved = self.is_approved
