@@ -59,7 +59,7 @@ class CampaignView(CreateAPIView):
                 response = {
                     "camapign_id": campaign.camapign_id,
                     "title": campaign.title,
-                    # "description": campaign.description
+                    "description": campaign.description
                 }
                 return Response(response, status=status.HTTP_201_CREATED)
         response = {
