@@ -10,14 +10,14 @@ from datetime import datetime
 class TaskView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         id = kwargs.get('task_id')
-        task = Tasks.objects.filter(task_id = id)[0]
+        task = Tasks.objects.filter(task_id=id)[0]
         response = {
             'task_id': task.task_id,
             'title': task.title,
             'description': task.description,
             'goal': task.goal,
             'documentation': task.documentation,
-            'xp': task.xp
+            'xp': task.xp,
         }
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -36,7 +36,7 @@ class TasksView(CreateAPIView):
         }
         """
         id = kwargs.get('campaign_id')
-        campaign_task = CampaignsTasks.objects.filter(campaign_id = id)
+        campaign_task = CampaignsTasks.objects.filter(campaign_id=id)
         response = {}
         for task in campaign_task:
             response[task.task_id.task_id] = {
@@ -46,7 +46,7 @@ class TasksView(CreateAPIView):
             }
 
         return Response(response, status=status.HTTP_201_CREATED)
-    
+
 
 # endpoint do danych kampanii (nazwa, opis, id kampani, tylko aktualnej kampani)
 class CampaignView(CreateAPIView):
@@ -72,7 +72,5 @@ class CampaignView(CreateAPIView):
         # response = {}
         # for task in campaign_task:
         #     response[task.task_id.task_id] = task.task_id.title
-        
 
-        # 
-
+        #
