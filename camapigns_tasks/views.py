@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from camapigns_tasks.models import CampaignsTasks, Tasks, Campaign
+from camapigns_tasks.models import CampaignsTasks, Tasks, Campaign, UsersTasks, User
 from datetime import datetime
 # Create your views here.
 
@@ -10,14 +10,24 @@ from datetime import datetime
 class TaskView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         id = kwargs.get('task_id')
-        task = Tasks.objects.filter(task_id = id)[0]
+        campaign_id = kwargs.get('campaign_id')
+        task = Tasks.objects.filter(task_id=id)[0]
+        userid = User.objects.filter(
+            token=request.META.get("HTTP_AUTHORIZATION"))[0]
+        campaign_task_id = CampaignsTasks.objects.filter(
+            task_id=task.task_id, campaign_id=campaign_id)[0].campaign_task_id
+
+        user_tasks = UsersTasks.objects.filter(
+            campaign_task_id=campaign_task_id, user_id=userid.id)[0]
         response = {
             'task_id': task.task_id,
             'title': task.title,
             'description': task.description,
             'goal': task.goal,
             'documentation': task.documentation,
-            'xp': task.xp
+            'xp': task.xp,
+            'is_approved': user_tasks.is_approved,
+            'in_verification': user_tasks.in_verification
         }
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -36,7 +46,9 @@ class TasksView(CreateAPIView):
         }
         """
         id = kwargs.get('campaign_id')
-        campaign_task = CampaignsTasks.objects.filter(campaign_id = id)
+        token = request.META.get("HTTP_AUTHORIZATION")
+
+        campaign_task = CampaignsTasks.objects.filter(campaign_id=id)
         response = {}
         for task in campaign_task:
             response[task.task_id.task_id] = {
@@ -46,7 +58,7 @@ class TasksView(CreateAPIView):
             }
 
         return Response(response, status=status.HTTP_201_CREATED)
-    
+
 
 # endpoint do danych kampanii (nazwa, opis, id kampani, tylko aktualnej kampani)
 class CampaignView(CreateAPIView):
@@ -72,7 +84,5 @@ class CampaignView(CreateAPIView):
         # response = {}
         # for task in campaign_task:
         #     response[task.task_id.task_id] = task.task_id.title
-        
 
-        # 
-
+        #
