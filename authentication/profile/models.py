@@ -6,7 +6,7 @@ from authentication.user.models import User
 
 class UserProfile(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='profile')
 

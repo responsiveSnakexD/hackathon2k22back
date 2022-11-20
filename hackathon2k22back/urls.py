@@ -25,6 +25,7 @@ urlpatterns = [
 
 
     path('api/auth/', include('authentication.user.urls')),
+    path('api/task/', include('camapigns_tasks.urls')),
     #path('auth', include('authentication.user.urls'))
     # path('auth/register/', RegisterView.as_view(), name="RegisterView"),
     # path('auth/login/', LoginView.as_view(), name="LoginView"),

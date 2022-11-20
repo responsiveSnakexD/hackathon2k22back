@@ -3,7 +3,6 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import PermissionsMixin
 
-import uuid
 
 
 class UserManager(BaseUserManager):
@@ -36,8 +35,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False)
+    id =  models.AutoField(primary_key=True)
 
     email = models.EmailField(
         verbose_name='email address',
@@ -48,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     token = models.TextField(unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    current_xp = models.IntegerField(default=0)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
