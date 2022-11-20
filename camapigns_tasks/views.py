@@ -5,6 +5,7 @@ from rest_framework import status
 from camapigns_tasks.models import CampaignsTasks, Tasks
 # Create your views here.
 
+
 class TaskView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         id = kwargs.get('task_id')
@@ -20,14 +21,28 @@ class TaskView(CreateAPIView):
 
         return Response(response, status=status.HTTP_201_CREATED)
 
+
 class TasksView(CreateAPIView):
     def post(self, request, *args, **kwargs):
+        """
+        Returns all tasks for a campaign in format:
+        {
+            "[task_id]": {
+                "title": "[title]",
+                "big_task": "[is_bigtask]",
+                "date": "[date]",
+            }
+        }
+        """
         id = kwargs.get('campaign_id')
         campaign_task = CampaignsTasks.objects.filter(campaign_id = id)
         response = {}
         for task in campaign_task:
-            response[task.task_id.task_id] = task.task_id.title
-        
+            response[task.task_id.task_id] = {
+                "title": task.task_id.title,
+                "big_task": task.task_id.is_bigtask,
+                "date": task.date,
+            }
 
         return Response(response, status=status.HTTP_201_CREATED)
 
